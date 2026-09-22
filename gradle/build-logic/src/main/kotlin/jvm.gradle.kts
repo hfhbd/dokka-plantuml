@@ -7,6 +7,7 @@ plugins {
     id("signing")
     id("io.github.hfhbd.mavencentral")
     id("java-test-fixtures")
+    id("dev.sigstore.sign")
 }
 
 kotlin {
@@ -26,7 +27,7 @@ dokka {
         File("$module/src/$sourceSetName").takeIf { it.exists() }?.let {
             sourceLink {
                 localDirectory = file("src/$sourceSetName/kotlin")
-                remoteUrl = uri("https://github.com/hfhbd/validation/tree/main/$module/src/$sourceSetName/kotlin")
+                remoteUrl = uri("https://github.com/hfhbd/dokka-plantuml/tree/main/$module/src/$sourceSetName/kotlin")
                 remoteLineSuffix = "#L"
             }
         }
@@ -48,7 +49,7 @@ publishing {
     }
 
     repositories {
-        maven(url = "https://maven.pkg.github.com/hfhbd/validation") {
+        maven(url = "https://maven.pkg.github.com/hfhbd/dokka-plantuml") {
             name = "GitHubPackages"
             credentials(PasswordCredentials::class)
         }
@@ -56,9 +57,9 @@ publishing {
 
     publications.withType<MavenPublication>().configureEach {
         pom {
-            name = "hfhbd Validation"
-            description = "Validation"
-            url = "https://github.com/hfhbd/validation"
+            name = "hfhbd dokka-plantuml"
+            description = "dokka-plantuml"
+            url = "https://github.com/hfhbd/dokka-plantuml"
             licenses {
                 license {
                     name = "Apache-2.0"
@@ -73,9 +74,9 @@ publishing {
                 }
             }
             scm {
-                connection = "scm:git://github.com/hfhbd/validation.git"
-                developerConnection = "scm:git://github.com/hfhbd/validation.git"
-                url = "https://github.com/hfhbd/validation"
+                connection = "scm:git://github.com/hfhbd/dokka-plantuml.git"
+                developerConnection = "scm:git://github.com/hfhbd/dokka-plantuml.git"
+                url = "https://github.com/hfhbd/dokka-plantuml"
             }
         }
     }
@@ -88,10 +89,4 @@ signing {
     )
     isRequired = providers.gradleProperty("signingKey").isPresent
     sign(publishing.publications)
-}
-
-// https://youtrack.jetbrains.com/issue/KT-46466
-val signingTasks = tasks.withType<Sign>()
-tasks.withType<AbstractPublishToMaven>().configureEach {
-    dependsOn(signingTasks)
 }

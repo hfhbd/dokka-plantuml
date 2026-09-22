@@ -15,3 +15,4 @@ plantuml = { module = "net.sourceforge.plantuml:plantuml-asl", version = "1.2026
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 mavencentral = { id = "io.github.hfhbd.mavencentral", version = "0.0.26" }
+sigstore = { id = "dev.sigstore.sign", version = "2.3.0" }
