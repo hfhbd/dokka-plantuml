@@ -1,0 +1,17 @@
+[versions]
+kotlin = "2.4.20"
+dokka = "2.3.0-Beta"
+
+[libraries]
+dokka-core = { module = "org.jetbrains.dokka:dokka-core", version.ref = "dokka" }
+dokka-base = { module = "org.jetbrains.dokka:dokka-base", version.ref = "dokka" }
+dokka-gradle-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
+dokka-test-api = { module = "org.jetbrains.dokka:dokka-test-api", version.ref = "dokka" }
+dokka-base-test-utils = { module = "org.jetbrains.dokka:dokka-base-test-utils", version.ref = "dokka" }
+dokka-analysis-kotlin-symbols = { module = "org.jetbrains.dokka:analysis-kotlin-symbols", version.ref = "dokka" }
+
+plantuml = { module = "net.sourceforge.plantuml:plantuml-asl", version = "1.2026.8" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+mavencentral = { id = "io.github.hfhbd.mavencentral", version = "0.0.26" }

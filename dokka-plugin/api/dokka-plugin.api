@@ -1,0 +1,10 @@
+public final class io/github/hfhbd/dokka/plantuml/PlantumlPageTransformer : org/jetbrains/dokka/transformers/pages/PageTransformer {
+	public fun <init> (Lorg/jetbrains/dokka/plugability/DokkaContext;)V
+	public fun invoke (Lorg/jetbrains/dokka/pages/RootPageNode;)Lorg/jetbrains/dokka/pages/RootPageNode;
+}
+
+public final class io/github/hfhbd/dokka/plantuml/PlantumlPlugin : org/jetbrains/dokka/plugability/DokkaPlugin {
+	public fun <init> ()V
+	public final fun getPageTransformer ()Lorg/jetbrains/dokka/plugability/Extension;
+}
+
