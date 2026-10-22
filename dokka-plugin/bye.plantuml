@@ -1,0 +1,3 @@
+@startuml
+FOO -> BAR : BYE
+@enduml

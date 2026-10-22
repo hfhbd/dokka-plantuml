@@ -2,6 +2,6 @@
 
 ```plantuml
 @startuml
-Bob -> Alice : hello
+!include_many alice.plantuml
 @enduml
 ```

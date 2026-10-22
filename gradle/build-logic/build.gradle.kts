@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
     implementation(libs.plugins.kotlin.jvm.toDep())
+    implementation(libs.plugins.kotlin.serialization.toDep())
     implementation(libs.plugins.mavencentral.toDep())
     implementation(libs.plugins.sigstore.toDep())
     implementation(libs.dokka.gradle.plugin)

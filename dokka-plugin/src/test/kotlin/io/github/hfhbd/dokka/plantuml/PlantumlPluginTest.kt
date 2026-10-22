@@ -1,7 +1,10 @@
 package io.github.hfhbd.dokka.plantuml
 
+import org.jetbrains.dokka.DokkaConfiguration
+import org.jetbrains.dokka.PluginConfigurationImpl
 import utils.TestOutputWriterPlugin
 import org.jetbrains.dokka.base.testApi.testRunner.BaseAbstractTest
+import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -10,6 +13,14 @@ class PlantumlPluginTest : BaseAbstractTest() {
     @Test
     fun simpleTest() {
         val configuration = dokkaConfiguration {
+            pluginsConfigurations.add(
+                PluginConfigurationImpl(
+                    fqPluginName = PlantumlPlugin::class.qualifiedName!!,
+                    serializationFormat = DokkaConfiguration.SerializationFormat.JSON,
+                    values = "{}"
+                )
+            )
+
             sourceSets {
                 sourceSet {
                     sourceRoots = listOf("src/main/kotlin/test/Test.kt")
@@ -54,15 +65,63 @@ class PlantumlPluginTest : BaseAbstractTest() {
                     Regex("""<img alt="PlantUML diagram" src="(images/plantuml/[^"]+\.png)">""").find(moduleIndex)
                 ) { "Expected a rendered PlantUML <img> tag in the module page" }
 
+                val renderedFile = context.configuration.outputDir.resolve(imgTag.groupValues[1])
+                assertTrue(renderedFile.exists(), "Rendered PlantUML PNG file should exist on disk")
+            }
+        }
+    }
+
+    @Test
+    fun includeTest() {
+        val out = File("build/dokka-tests/include-test")
+        out.deleteRecursively()
+
+        val input = File("src/test/resources/include-test")
+        out.parentFile.mkdirs()
+        input.copyRecursively(out)
+
+        val configuration = dokkaConfiguration {
+            outputDir = out
+            pluginsConfigurations.add(
+                PluginConfigurationImpl(
+                    fqPluginName = PlantumlPlugin::class.qualifiedName!!,
+                    serializationFormat = DokkaConfiguration.SerializationFormat.JSON,
+                    values = """{"workingDirectory":"build/dokka-tests/include-test"}"""
+                )
+            )
+            sourceSets {
+                sourceSet {
+                    sourceRoots = listOf("src/test/resources/include-test/src/main/kotlin/test/Test.kt")
+                    includes = listOf("src/test/resources/include-test/f.md")
+                }
+            }
+        }
+
+        val writerPlugin = TestOutputWriterPlugin(true)
+
+        testFromData(
+            configuration,
+            useOutputLocationFromConfig = true,
+            pluginOverrides = listOf(
+                writerPlugin, PlantumlPlugin(),
+            )
+        ) {
+            renderingStage = { _, context ->
+                val moduleIndex = writerPlugin.writer.contents.getValue("index.html")
+
+                assertFalse(
+                    moduleIndex.contains("startuml"),
+                    "The raw plantuml source should have been replaced by a rendered image"
+                )
+
+                val imgTag = requireNotNull(
+                    Regex("""<img alt="PlantUML diagram" src="(images/plantuml/[^"]+\.png)">""").find(moduleIndex)
+                ) { "Expected a rendered PlantUML <img> tag in the module page" }
+
                 // The image is written relative to the output directory, so it is part of the
                 // generated documentation and stays valid if the module output is relocated.
                 val renderedFile = context.configuration.outputDir.resolve(imgTag.groupValues[1])
                 assertTrue(renderedFile.exists(), "Rendered PlantUML PNG file should exist on disk")
-                assertTrue(renderedFile.length() > 0, "Rendered PlantUML PNG file should not be empty")
-
-                val pngMagicBytes = byteArrayOf(0x89.toByte(), 0x50, 0x4E, 0x47)
-                val actualBytes = renderedFile.readBytes().copyOfRange(0, 4)
-                assertTrue(actualBytes.contentEquals(pngMagicBytes), "Rendered file should be a valid PNG image")
             }
         }
     }

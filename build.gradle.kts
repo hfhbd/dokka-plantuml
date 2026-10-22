@@ -13,4 +13,9 @@ dokka {
         }
         dokkaPlugin(projects.dokkaPlugin)
     }
+
+    pluginsConfiguration {
+        registerBinding(PlantumlPluginParameter::class, PlantumlPluginParameter::class)
+        register<PlantumlPluginParameter>("plantuml") {}
+    }
 }

@@ -6,12 +6,18 @@ dokka {
     dependencies {
         dokkaPlugin(project())
     }
+
+    pluginsConfiguration {
+        registerBinding(PlantumlPluginParameter::class, PlantumlPluginParameter::class)
+        register<PlantumlPluginParameter>("plantuml") {}
+    }
 }
 
 dependencies {
     implementation(libs.dokka.core)
     implementation(libs.dokka.base)
     implementation(libs.plantuml)
+    implementation(libs.json)
 }
 
 testing {
