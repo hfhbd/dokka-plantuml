@@ -128,8 +128,11 @@ public class PlantumlPageTransformer(
         }
 
         FileOutputStream(file).use { output ->
-            checkNotNull(SourceStringReader(source, currentDirectory).outputImage(output)) {
+            val diagram = checkNotNull(SourceStringReader(source, currentDirectory).outputImage(output)) {
                 "Failed to render PlantUML diagram"
+            }
+            require(diagram.imageData.status == 0) {
+                "Failed to render PlantUML diagram: ${diagram.imageData.status}"
             }
         }
 
