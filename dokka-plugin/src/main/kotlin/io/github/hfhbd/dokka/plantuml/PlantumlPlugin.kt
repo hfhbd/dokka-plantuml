@@ -1,6 +1,10 @@
 package io.github.hfhbd.dokka.plantuml
 
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import net.sourceforge.plantuml.SourceStringReader
+import net.sourceforge.plantuml.security.SFile
+import org.jetbrains.dokka.DokkaConfiguration
 import org.jetbrains.dokka.base.DokkaBase
 import org.jetbrains.dokka.pages.ContentCodeBlock
 import org.jetbrains.dokka.pages.ContentComposite
@@ -36,9 +40,29 @@ public class PlantumlPlugin : DokkaPlugin() {
         PluginApiPreviewAcknowledgement
 }
 
+@Serializable
+private data class PlantumlConfiguration(
+    val workingDirectory: String? = null,
+)
+
+private fun DokkaContext.plantumlConfiguration(): PlantumlConfiguration {
+    val pluginId = PlantumlPlugin::class.qualifiedName!!
+
+    val entry = configuration.pluginsConfiguration.singleOrNull { it.fqPluginName == pluginId }
+        ?: return PlantumlConfiguration()
+
+    require(entry.serializationFormat == DokkaConfiguration.SerializationFormat.JSON) {
+        "PlantumlConfiguration only supports Json"
+    }
+
+    return Json.decodeFromString(PlantumlConfiguration.serializer(), entry.values)
+}
+
 public class PlantumlPageTransformer(
     private val context: DokkaContext,
 ) : PageTransformer {
+
+    private val plantumlConfiguration = context.plantumlConfiguration()
 
     override fun invoke(input: RootPageNode): RootPageNode {
         val locationProvider = context
@@ -99,8 +123,12 @@ public class PlantumlPageTransformer(
         val file = File(context.configuration.outputDir, path)
         file.parentFile.mkdirs()
 
+        val currentDirectory = plantumlConfiguration.workingDirectory?.let {
+            SFile.fromFile(File(it))
+        }
+
         FileOutputStream(file).use { output ->
-            checkNotNull(SourceStringReader(source).outputImage(output)) {
+            checkNotNull(SourceStringReader(source, currentDirectory).outputImage(output)) {
                 "Failed to render PlantUML diagram"
             }
         }

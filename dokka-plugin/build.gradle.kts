@@ -12,6 +12,7 @@ dependencies {
     implementation(libs.dokka.core)
     implementation(libs.dokka.base)
     implementation(libs.plantuml)
+    implementation(libs.json)
 }
 
 testing {

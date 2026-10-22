@@ -2,6 +2,6 @@
 
 ```plantuml
 @startuml
-FOO -> BAR : BYE
+!include bye.plantuml
 @enduml
 ```
