@@ -132,7 +132,7 @@ public class PlantumlPageTransformer(
                 "Failed to render PlantUML diagram"
             }
             require(diagram.imageData.status == 0) {
-                "Failed to render PlantUML diagram: ${diagram.imageData.status}"
+                "Failed to render PlantUML diagram: ${diagram.imageData.status} with currentDirectory: $currentDirectory and source:\n$source"
             }
         }
 
