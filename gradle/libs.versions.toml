@@ -1,6 +1,6 @@
 [versions]
 kotlin = "2.4.21"
-dokka = "2.3.0-Beta"
+dokka = "2.3.0"
 
 [libraries]
 dokka-core = { module = "org.jetbrains.dokka:dokka-core", version.ref = "dokka" }
